@@ -11,13 +11,16 @@ interface FeedState {
   activeIndex: number;
   likedReelIds: Record<string, boolean>;
   muted: boolean;
-  /** Reel manually paused by the user; cleared when scrolling to another reel. */
-  pausedReelId: string | null;
+  /**
+   * Reel whose play state the user flipped away from the default (the
+   * autoplay preference). Cleared when scrolling to another reel.
+   */
+  playbackOverrideReelId: string | null;
   loadFeed: () => Promise<void>;
   setActiveIndex: (index: number) => void;
   toggleLike: (reelId: string) => void;
   toggleMuted: () => void;
-  togglePaused: (reelId: string) => void;
+  togglePlayback: (reelId: string) => void;
 }
 
 export const useFeedStore = create<FeedState>((set, get) => ({
@@ -26,7 +29,7 @@ export const useFeedStore = create<FeedState>((set, get) => ({
   activeIndex: 0,
   likedReelIds: {},
   muted: false,
-  pausedReelId: null,
+  playbackOverrideReelId: null,
 
   loadFeed: async () => {
     set({ status: 'loading' });
@@ -40,7 +43,7 @@ export const useFeedStore = create<FeedState>((set, get) => ({
 
   setActiveIndex: (index) => {
     if (index !== get().activeIndex) {
-      set({ activeIndex: index, pausedReelId: null });
+      set({ activeIndex: index, playbackOverrideReelId: null });
     }
   },
 
@@ -53,7 +56,9 @@ export const useFeedStore = create<FeedState>((set, get) => ({
     set({ muted: !get().muted });
   },
 
-  togglePaused: (reelId) => {
-    set({ pausedReelId: get().pausedReelId === reelId ? null : reelId });
+  togglePlayback: (reelId) => {
+    set({
+      playbackOverrideReelId: get().playbackOverrideReelId === reelId ? null : reelId,
+    });
   },
 }));

@@ -6,6 +6,7 @@ import { Image, Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { useFeedStore } from '@/store/feed-store';
+import { useProfileStore } from '@/store/profile-store';
 import { colors } from '@/theme';
 import { type Reel } from '@/types';
 
@@ -27,8 +28,13 @@ function syncPlayer(player: VideoPlayer, options: { muted: boolean; shouldPlay: 
 
 export function ReelVideo({ reel, isActive }: ReelVideoProps) {
   const muted = useFeedStore((state) => state.muted);
-  const pausedByUser = useFeedStore((state) => state.pausedReelId === reel.id);
-  const togglePaused = useFeedStore((state) => state.togglePaused);
+  const overridden = useFeedStore((state) => state.playbackOverrideReelId === reel.id);
+  const togglePlayback = useFeedStore((state) => state.togglePlayback);
+  const autoplay = useProfileStore((state) => state.settings.autoplayReels);
+
+  // The user's tap flips whatever the autoplay preference would do.
+  const shouldPlay = isActive && (overridden ? !autoplay : autoplay);
+  const showPausedGlyph = isActive && !shouldPlay;
 
   const player = useVideoPlayer(reel.videoUrl, (instance) => {
     instance.loop = true;
@@ -37,17 +43,17 @@ export function ReelVideo({ reel, isActive }: ReelVideoProps) {
   const { status } = useEvent(player, 'statusChange', { status: player.status });
 
   useEffect(() => {
-    syncPlayer(player, { muted, shouldPlay: isActive && !pausedByUser });
-  }, [player, muted, isActive, pausedByUser]);
+    syncPlayer(player, { muted, shouldPlay });
+  }, [player, muted, shouldPlay]);
 
   const videoVisible = isActive && status === 'readyToPlay';
 
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={pausedByUser ? 'Play video' : 'Pause video'}
+      accessibilityLabel={shouldPlay ? 'Pause video' : 'Play video'}
       className="absolute h-full w-full"
-      onPress={() => togglePaused(reel.id)}
+      onPress={() => togglePlayback(reel.id)}
     >
       <VideoView
         player={player}
@@ -65,7 +71,7 @@ export function ReelVideo({ reel, isActive }: ReelVideoProps) {
         />
       )}
 
-      {pausedByUser && (
+      {showPausedGlyph && (
         <Animated.View
           entering={FadeIn.duration(160)}
           exiting={FadeOut.duration(160)}
