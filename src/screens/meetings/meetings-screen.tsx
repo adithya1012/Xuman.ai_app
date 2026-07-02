@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button, SegmentedControl, Text } from '@/components/common';
 import { MeetingCard } from '@/components/meetings/meeting-card';
 import { ComingSoon } from '@/components/shared/coming-soon';
+import { NotificationBell } from '@/components/shared/notification-bell';
 import { selectMeetingsByStatus, useMeetingsStore } from '@/store/meetings-store';
 import { colors } from '@/theme';
 import { type MeetingStatus } from '@/types';
@@ -48,7 +49,10 @@ export function MeetingsScreen() {
   return (
     <View className="flex-1 bg-background" style={{ paddingTop: insets.top + 12 }}>
       <View className="gap-lg px-lg pb-md">
-        <Text variant="title">Meetings</Text>
+        <View className="flex-row items-center justify-between">
+          <Text variant="title">Meetings</Text>
+          <NotificationBell />
+        </View>
         <SegmentedControl
           segments={SEGMENTS.map((segment) => segment.label)}
           selectedIndex={segmentIndex}
