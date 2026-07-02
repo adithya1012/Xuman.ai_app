@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "Xuman.ai_app",
-    "slug": "Xuman.ai_app",
+    "name": "Xuman",
+    "slug": "xuman",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "xumanaiapp",
-    "userInterfaceStyle": "automatic",
+    "scheme": "xuman",
+    "userInterfaceStyle": "dark",
     "ios": {
       "icon": "./assets/expo.icon"
     },
@@ -28,7 +28,7 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#208AEF",
+          "backgroundColor": "#000000",
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
         }
