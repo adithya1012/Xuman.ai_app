@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { CalendarClock, Home, UserRound } from 'lucide-react-native';
+import { CalendarClock, Home, Search, UserRound } from 'lucide-react-native';
 
 import { TabBar } from '@/components/navigation/tab-bar';
 import { colors } from '@/theme';
@@ -18,6 +18,13 @@ export default function TabsLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color, size }) => <Home color={color} size={size} />,
+        }}
+      />
+      <Tabs.Screen
+        name="search"
+        options={{
+          title: 'Explore',
+          tabBarIcon: ({ color, size }) => <Search color={color} size={size} />,
         }}
       />
       <Tabs.Screen
