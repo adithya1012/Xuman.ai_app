@@ -1,3 +1,4 @@
+import { useIsFocused } from 'expo-router';
 import { useCallback, useState } from 'react';
 import {
   FlatList,
@@ -27,6 +28,8 @@ function onViewableItemsChanged({ viewableItems }: { viewableItems: ViewToken<Re
 export function FeedList() {
   const reels = useFeedStore((state) => state.reels);
   const activeIndex = useFeedStore((state) => state.activeIndex);
+  // Pause playback while another tab or screen is in front of the feed.
+  const isFocused = useIsFocused();
 
   const [itemHeight, setItemHeight] = useState(0);
 
@@ -42,7 +45,7 @@ export function FeedList() {
           keyExtractor={(reel) => reel.id}
           renderItem={({ item, index }) => (
             <View style={{ height: itemHeight }}>
-              <ReelCard reel={item} isActive={index === activeIndex} />
+              <ReelCard reel={item} isActive={isFocused && index === activeIndex} />
             </View>
           )}
           pagingEnabled
