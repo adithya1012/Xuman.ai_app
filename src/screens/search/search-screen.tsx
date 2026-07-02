@@ -8,6 +8,7 @@ import { CategoryChips } from '@/components/search/category-chips';
 import { CreatorResultCard } from '@/components/search/creator-result-card';
 import { SearchBar } from '@/components/search/search-bar';
 import { ComingSoon } from '@/components/shared/coming-soon';
+import { NotificationBell } from '@/components/shared/notification-bell';
 import { useSearchStore } from '@/store/search-store';
 import { colors } from '@/theme';
 
@@ -35,7 +36,10 @@ export function SearchScreen() {
     <View className="flex-1 bg-background" style={{ paddingTop: insets.top + 12 }}>
       <View className="gap-lg pb-md">
         <View className="gap-lg px-lg">
-          <Text variant="title">Explore</Text>
+          <View className="flex-row items-center justify-between">
+            <Text variant="title">Explore</Text>
+            <NotificationBell />
+          </View>
           <SearchBar value={query} onChangeText={setQuery} />
         </View>
         <CategoryChips selected={category} onSelect={setCategory} />
