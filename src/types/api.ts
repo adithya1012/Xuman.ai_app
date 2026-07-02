@@ -33,3 +33,7 @@ export interface CreateBookingResponse {
 export interface MeetingsResponse {
   meetings: Meeting[];
 }
+
+export interface SearchCreatorsResponse {
+  creators: Creator[];
+}
