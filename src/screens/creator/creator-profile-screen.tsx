@@ -93,7 +93,13 @@ export function CreatorProfileScreen() {
         className="border-t border-border bg-background px-lg pt-md"
         style={{ paddingBottom: insets.bottom + 12 }}
       >
-        <Button label={`Book a Call · $${creator.sessionPriceUsd}`} size="lg" />
+        <Button
+          label={`Book a Call · $${creator.sessionPriceUsd}`}
+          size="lg"
+          onPress={() =>
+            router.push({ pathname: '/booking/[creatorId]', params: { creatorId: creator.id } })
+          }
+        />
       </View>
     </View>
   );
