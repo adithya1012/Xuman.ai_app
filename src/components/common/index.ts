@@ -7,4 +7,8 @@ export {
   type ButtonVariant,
 } from '@/components/common/button';
 export { Card, type CardProps } from '@/components/common/card';
+export {
+  SegmentedControl,
+  type SegmentedControlProps,
+} from '@/components/common/segmented-control';
 export { Text, type TextProps, type TextVariant } from '@/components/common/text';
