@@ -1,23 +1,40 @@
-import { View } from 'react-native';
+import { useEffect } from 'react';
+import { ActivityIndicator, View } from 'react-native';
 
-import { Avatar, Badge, Button, Card, Text } from '@/components/common';
+import { Button, Text } from '@/components/common';
+import { FeedList } from '@/components/feed/feed-list';
+import { useFeedStore } from '@/store/feed-store';
+import { colors } from '@/theme';
 
 export function HomeScreen() {
-  return (
-    <View className="flex-1 items-center justify-center gap-xl bg-background px-xl">
-      <View className="items-center gap-sm">
-        <Text variant="display">Xuman</Text>
-        <Text variant="caption">Learn directly from the people who do it best</Text>
-      </View>
+  const status = useFeedStore((state) => state.status);
+  const loadFeed = useFeedStore((state) => state.loadFeed);
 
-      <Card className="w-full items-center gap-md">
-        <Avatar name="Xuman Creator" size="lg" />
-        <Badge label="Design System" variant="accent" />
+  useEffect(() => {
+    if (useFeedStore.getState().status === 'idle') {
+      loadFeed();
+    }
+  }, [loadFeed]);
+
+  if (status === 'error') {
+    return (
+      <View className="flex-1 items-center justify-center gap-md bg-background px-2xl">
+        <Text variant="heading">Something went wrong</Text>
         <Text variant="caption" className="text-center">
-          Feed, profiles, and booking are on the way.
+          We could not load your feed. Check your connection and try again.
         </Text>
-        <Button label="Get Started" className="self-stretch" />
-      </Card>
-    </View>
-  );
+        <Button label="Retry" variant="secondary" onPress={loadFeed} />
+      </View>
+    );
+  }
+
+  if (status !== 'ready') {
+    return (
+      <View className="flex-1 items-center justify-center bg-background">
+        <ActivityIndicator size="large" color={colors.accent.DEFAULT} />
+      </View>
+    );
+  }
+
+  return <FeedList />;
 }
