@@ -1,4 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { getMeetings } from '@/services/meeting-service';
 import { type Meeting } from '@/types';
@@ -18,26 +20,35 @@ interface MeetingsState {
   addMeeting: (meeting: Meeting) => void;
 }
 
-export const useMeetingsStore = create<MeetingsState>((set, get) => ({
-  fetched: [],
-  local: [],
-  status: 'idle',
+export const useMeetingsStore = create<MeetingsState>()(
+  persist(
+    (set, get) => ({
+      fetched: [],
+      local: [],
+      status: 'idle',
 
-  loadMeetings: async () => {
-    set({ status: 'loading' });
-    try {
-      const { meetings } = await getMeetings();
-      set({ fetched: meetings, status: 'ready' });
-    } catch {
-      set({ status: 'error' });
-    }
-  },
+      loadMeetings: async () => {
+        set({ status: 'loading' });
+        try {
+          const { meetings } = await getMeetings();
+          set({ fetched: meetings, status: 'ready' });
+        } catch {
+          set({ status: 'error' });
+        }
+      },
 
-  addMeeting: (meeting) => {
-    const local = get().local.filter((existing) => existing.id !== meeting.id);
-    set({ local: [meeting, ...local] });
-  },
-}));
+      addMeeting: (meeting) => {
+        const local = get().local.filter((existing) => existing.id !== meeting.id);
+        set({ local: [meeting, ...local] });
+      },
+    }),
+    {
+      name: 'xuman-local-meetings',
+      storage: createJSONStorage(() => AsyncStorage),
+      partialize: (state) => ({ local: state.local }),
+    },
+  ),
+);
 
 export function selectMeetingsByStatus(
   state: Pick<MeetingsState, 'fetched' | 'local'>,
