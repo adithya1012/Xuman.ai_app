@@ -1,10 +1,13 @@
 import { create } from 'zustand';
 
 import { createBooking, getAvailability } from '@/services/booking-service';
+import { useCreatorStore } from '@/store/creator-store';
+import { useMeetingsStore } from '@/store/meetings-store';
 import { type Booking, type TimeSlot } from '@/types';
 import { getUpcomingDates, toISODate } from '@/utils/date';
 
 const BOOKABLE_DAYS = 14;
+const SESSION_DURATION_MINUTES = 30;
 
 type SlotsStatus = 'idle' | 'loading' | 'ready' | 'error';
 type ConfirmStatus = 'idle' | 'submitting' | 'success' | 'error';
@@ -90,6 +93,20 @@ export const useBookingStore = create<BookingState>((set, get) => ({
         note: note?.trim() ? note.trim() : undefined,
       });
       set({ confirmStatus: 'success', lastBooking: booking });
+
+      // Surface the new booking under Upcoming Meetings right away.
+      const creator = useCreatorStore.getState().profile?.creator;
+      if (creator && creator.id === creatorId) {
+        useMeetingsStore.getState().addMeeting({
+          id: booking.id,
+          creator,
+          date: booking.date,
+          timeLabel: booking.timeLabel,
+          durationMinutes: SESSION_DURATION_MINUTES,
+          note: booking.note,
+          status: 'upcoming',
+        });
+      }
     } catch {
       set({ confirmStatus: 'error' });
     }

@@ -1,5 +1,6 @@
 import { type Booking, type TimeSlot } from '@/types/booking';
 import { type Creator } from '@/types/creator';
+import { type Meeting } from '@/types/meeting';
 import { type Reel } from '@/types/reel';
 import { type Review } from '@/types/review';
 
@@ -27,4 +28,8 @@ export interface CreateBookingRequest {
 
 export interface CreateBookingResponse {
   booking: Booking;
+}
+
+export interface MeetingsResponse {
+  meetings: Meeting[];
 }
