@@ -2,6 +2,7 @@ import { type Booking, type TimeSlot } from '@/types/booking';
 import { type Creator } from '@/types/creator';
 import { type Meeting } from '@/types/meeting';
 import { type AppNotification } from '@/types/notification';
+import { type UserProfile } from '@/types/user';
 import { type Reel } from '@/types/reel';
 import { type Review } from '@/types/review';
 
@@ -41,4 +42,8 @@ export interface SearchCreatorsResponse {
 
 export interface NotificationsResponse {
   notifications: AppNotification[];
+}
+
+export interface UserResponse {
+  user: UserProfile;
 }
