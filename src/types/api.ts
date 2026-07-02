@@ -1,3 +1,4 @@
+import { type Booking, type TimeSlot } from '@/types/booking';
 import { type Creator } from '@/types/creator';
 import { type Reel } from '@/types/reel';
 import { type Review } from '@/types/review';
@@ -10,4 +11,20 @@ export interface CreatorProfileResponse {
   creator: Creator;
   reels: Reel[];
   reviews: Review[];
+}
+
+export interface AvailabilityResponse {
+  date: string;
+  slots: TimeSlot[];
+}
+
+export interface CreateBookingRequest {
+  creatorId: string;
+  date: string;
+  timeLabel: string;
+  note?: string;
+}
+
+export interface CreateBookingResponse {
+  booking: Booking;
 }
