@@ -2,7 +2,7 @@ import { View } from 'react-native';
 
 import { Avatar, Badge, Button, Card, Text } from '@/components/common';
 
-export default function HomeScreen() {
+export function HomeScreen() {
   return (
     <View className="flex-1 items-center justify-center gap-xl bg-background px-xl">
       <View className="items-center gap-sm">
