@@ -1,4 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { getUser } from '@/services/user-service';
 import { type UserProfile } from '@/types';
@@ -19,27 +21,36 @@ interface ProfileState {
   toggleSetting: (key: keyof AppSettings) => void;
 }
 
-export const useProfileStore = create<ProfileState>((set, get) => ({
-  user: null,
-  status: 'idle',
-  settings: {
-    autoplayReels: true,
-    pushNotifications: true,
-    emailUpdates: false,
-  },
+export const useProfileStore = create<ProfileState>()(
+  persist(
+    (set, get) => ({
+      user: null,
+      status: 'idle',
+      settings: {
+        autoplayReels: true,
+        pushNotifications: true,
+        emailUpdates: false,
+      },
 
-  loadProfile: async () => {
-    set({ status: 'loading' });
-    try {
-      const { user } = await getUser();
-      set({ user, status: 'ready' });
-    } catch {
-      set({ status: 'error' });
-    }
-  },
+      loadProfile: async () => {
+        set({ status: 'loading' });
+        try {
+          const { user } = await getUser();
+          set({ user, status: 'ready' });
+        } catch {
+          set({ status: 'error' });
+        }
+      },
 
-  toggleSetting: (key) => {
-    const { settings } = get();
-    set({ settings: { ...settings, [key]: !settings[key] } });
-  },
-}));
+      toggleSetting: (key) => {
+        const { settings } = get();
+        set({ settings: { ...settings, [key]: !settings[key] } });
+      },
+    }),
+    {
+      name: 'xuman-settings',
+      storage: createJSONStorage(() => AsyncStorage),
+      partialize: (state) => ({ settings: state.settings }),
+    },
+  ),
+);
