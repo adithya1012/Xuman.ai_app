@@ -10,9 +10,14 @@ interface FeedState {
   status: FeedStatus;
   activeIndex: number;
   likedReelIds: Record<string, boolean>;
+  muted: boolean;
+  /** Reel manually paused by the user; cleared when scrolling to another reel. */
+  pausedReelId: string | null;
   loadFeed: () => Promise<void>;
   setActiveIndex: (index: number) => void;
   toggleLike: (reelId: string) => void;
+  toggleMuted: () => void;
+  togglePaused: (reelId: string) => void;
 }
 
 export const useFeedStore = create<FeedState>((set, get) => ({
@@ -20,6 +25,8 @@ export const useFeedStore = create<FeedState>((set, get) => ({
   status: 'idle',
   activeIndex: 0,
   likedReelIds: {},
+  muted: false,
+  pausedReelId: null,
 
   loadFeed: async () => {
     set({ status: 'loading' });
@@ -33,12 +40,20 @@ export const useFeedStore = create<FeedState>((set, get) => ({
 
   setActiveIndex: (index) => {
     if (index !== get().activeIndex) {
-      set({ activeIndex: index });
+      set({ activeIndex: index, pausedReelId: null });
     }
   },
 
   toggleLike: (reelId) => {
     const { likedReelIds } = get();
     set({ likedReelIds: { ...likedReelIds, [reelId]: !likedReelIds[reelId] } });
+  },
+
+  toggleMuted: () => {
+    set({ muted: !get().muted });
+  },
+
+  togglePaused: (reelId) => {
+    set({ pausedReelId: get().pausedReelId === reelId ? null : reelId });
   },
 }));
