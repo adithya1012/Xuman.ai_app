@@ -5,6 +5,7 @@ export {
   type CreatorProfileResponse,
   type FeedResponse,
   type MeetingsResponse,
+  type SearchCreatorsResponse,
 } from '@/types/api';
 export { type Booking, type TimeSlot } from '@/types/booking';
 export { type Creator } from '@/types/creator';
